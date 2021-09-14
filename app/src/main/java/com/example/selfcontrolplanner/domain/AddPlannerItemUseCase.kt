@@ -1,4 +1,4 @@
-package com.example.selfcontrolplanner.domian
+package com.example.selfcontrolplanner.domain
 
 class AddPlannerItemUseCase(private val plannerListRepository: PlannerListRepository) {
 
