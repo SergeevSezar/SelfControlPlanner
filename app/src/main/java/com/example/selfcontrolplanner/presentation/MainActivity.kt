@@ -1,7 +1,8 @@
-package com.example.selfcontrolplanner
+package com.example.selfcontrolplanner.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.selfcontrolplanner.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
