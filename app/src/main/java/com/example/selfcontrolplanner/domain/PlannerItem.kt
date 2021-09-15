@@ -1,8 +1,15 @@
 package com.example.selfcontrolplanner.domain
 
 data class PlannerItem(
-    val id : Int,
     val name : String,
     val data : Int,
-    val deferred : Boolean
+    val deferred : Boolean,
+    var id : Int = UNDEFINED_ID
 )
+{
+
+    companion object {
+
+        const val UNDEFINED_ID = -1
+    }
+}
