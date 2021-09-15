@@ -2,7 +2,6 @@ package com.example.selfcontrolplanner.data
 
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.example.selfcontrolplanner.domain.PlannerListRepository
-import java.lang.RuntimeException
 
 object PlannerListRepositoryImpl : PlannerListRepository {
 
