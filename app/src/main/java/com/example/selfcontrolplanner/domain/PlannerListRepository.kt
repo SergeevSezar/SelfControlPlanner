@@ -1,8 +1,10 @@
 package com.example.selfcontrolplanner.domain
 
+import androidx.lifecycle.LiveData
+
 interface PlannerListRepository {
 
-    fun getPlannerList(): List<PlannerItem>
+    fun getPlannerList(): LiveData<List<PlannerItem>>
 
     fun getPlannerItem(plannerItemId: Int): PlannerItem
 

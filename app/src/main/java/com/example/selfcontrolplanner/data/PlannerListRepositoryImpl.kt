@@ -1,16 +1,26 @@
 package com.example.selfcontrolplanner.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.example.selfcontrolplanner.domain.PlannerListRepository
 
 object PlannerListRepositoryImpl : PlannerListRepository {
 
+    private val plannerListLD = MutableLiveData<List<PlannerItem>>()
     private val plannerList = mutableListOf<PlannerItem>()
 
     private var autoIncId = 0
 
-    override fun getPlannerList(): List<PlannerItem> {
-        return plannerList.toList()
+    init {
+        for(i in 0 until 10) {
+            val item = PlannerItem("Name $i", i, true)
+            addPlannerItemList(item)
+        }
+    }
+
+    override fun getPlannerList(): LiveData<List<PlannerItem>> {
+        return plannerListLD
     }
 
     override fun getPlannerItem(plannerItemId: Int): PlannerItem {
@@ -31,9 +41,15 @@ object PlannerListRepositoryImpl : PlannerListRepository {
             autoIncId++
         }
         plannerList.add(plannerItem)
+        updateList()
     }
 
     override fun removePlannerItem(plannerItem: PlannerItem) {
         plannerList.remove(plannerItem)
+        updateList()
+    }
+
+    private fun updateList() {
+        plannerListLD.postValue(plannerList.toList())
     }
 }
