@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SelfControlPlanner</string>
+    <string name="add_new_plan_item">Add new plan item</string>
 </resources>
