@@ -8,7 +8,7 @@ import com.example.selfcontrolplanner.domain.PlannerListRepository
 object PlannerListRepositoryImpl : PlannerListRepository {
 
     private val plannerListLD = MutableLiveData<List<PlannerItem>>()
-    private val plannerList = mutableListOf<PlannerItem>()
+    private val plannerList = sortedSetOf<PlannerItem>({ o1, o2 -> o1.id.compareTo(o2.id) })
 
     private var autoIncId = 0
 
