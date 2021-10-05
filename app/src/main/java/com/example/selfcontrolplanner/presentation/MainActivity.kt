@@ -1,48 +1,45 @@
 package com.example.selfcontrolplanner.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.selfcontrolplanner.R
 import com.example.selfcontrolplanner.domain.PlannerItem
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var planListLinearLayout: LinearLayout
+    private lateinit var adapter: PlanListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        planListLinearLayout = findViewById(R.id.ll_plan_list)
+        setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.plannerList.observe(this) {
-            showList(it)
+            adapter.planList = it
         }
     }
 
-    private fun showList(list:List<PlannerItem>) {
-        planListLinearLayout.removeAllViews()
-        for (planItem in list) {
-            val layoutId = if (planItem.deferred) {
-                R.layout.enabled_plan_item
-            } else {
-                R.layout.disabled_plan_item
-            }
-            val view = LayoutInflater.from(this).inflate(layoutId,planListLinearLayout, false)
-            val tvName = view.findViewById<TextView>(R.id.tv_name)
-            val tvCount = view.findViewById<TextView>(R.id.tv_count)
-            tvName.text = planItem.name
-            tvCount.text = planItem.data.toString()
-            view.setOnLongClickListener {
-                viewModel.editPlannerList(planItem)
-                true
-            }
-            planListLinearLayout.addView(view)
+    private fun setupRecyclerView() {
+        val rvPlanList = findViewById<RecyclerView>(R.id.rv_planner_list)
+        adapter = PlanListAdapter()
+        rvPlanList.adapter = adapter
+        rvPlanList.recycledViewPool.setMaxRecycledViews(
+            PlanListAdapter.VIEW_TYPE_DISABLED,
+            PlanListAdapter.MAX_POOL_SIZE
+        )
+        rvPlanList.recycledViewPool.setMaxRecycledViews(
+            PlanListAdapter.VIEW_TYPE_DISABLED,
+            PlanListAdapter.MAX_POOL_SIZE
+        )
+        adapter.onPlanItemLongClickListener = {
+            viewModel.editPlannerList(it)
+        }
+        adapter.onPlanItemClickListener = {
+            Log.d("MainActivity", it.toString())
         }
     }
 }
