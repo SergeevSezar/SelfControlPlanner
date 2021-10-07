@@ -1,20 +1,22 @@
 package com.example.selfcontrolplanner.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.selfcontrolplanner.R
 import com.example.selfcontrolplanner.domain.PlannerItem
 
-class PlanListAdapter : RecyclerView.Adapter<PlanListAdapter.PlanItemViewHolder>() {
+class PlanListAdapter : ListAdapter<PlannerItem, PlanItemViewHolder>(PlanItemDiffCallback()) {
 
-    var planList = listOf<PlannerItem>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    //DiffUtil.CallBack
+//class PlanListAdapter : RecyclerView.Adapter<PlanListAdapter.PlanItemViewHolder>() {
+//    var planList = listOf<PlannerItem>()
+//        set(value) {
+//            val callback = PlanListDiffCallback(planList, value)
+//            val diffResult = DiffUtil.calculateDiff(callback)
+//            diffResult.dispatchUpdatesTo(this)
+//            field = value
+//        }
 
     var onPlanItemLongClickListener: ((PlannerItem) -> Unit)? = null
     var onPlanItemClickListener: ((PlannerItem) -> Unit)? = null
@@ -30,35 +32,25 @@ class PlanListAdapter : RecyclerView.Adapter<PlanListAdapter.PlanItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: PlanItemViewHolder, position: Int) {
-        val planItem = planList[position]
+        val planItem = getItem(position)
         holder.itemView.setOnLongClickListener {
             onPlanItemLongClickListener?.invoke(planItem)
             true
         }
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             onPlanItemClickListener?.invoke(planItem)
         }
         holder.tvName.text = planItem.name
         holder.tvCount.text = planItem.data.toString()
     }
 
-    override fun getItemCount(): Int {
-        return planList.size
-    }
-
     override fun getItemViewType(position: Int): Int {
-        val item = planList[position]
+        val item = getItem(position)
         return if (item.deferred) {
             VIEW_TYPE_ENABLED
         } else {
             VIEW_TYPE_DISABLED
         }
-
-    }
-
-    class PlanItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.findViewById<TextView>(R.id.tv_name)
-        val tvCount = view.findViewById<TextView>(R.id.tv_count)
     }
 
     companion object {
