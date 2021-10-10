@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SelfControlPlanner</string>
     <string name="add_new_plan_item">Add new plan item</string>
+    <string name="et_hint_name">Name:</string>
+    <string name="et_count_value">Count:</string>
+    <string name="button_save_text">Save</string>
 </resources>

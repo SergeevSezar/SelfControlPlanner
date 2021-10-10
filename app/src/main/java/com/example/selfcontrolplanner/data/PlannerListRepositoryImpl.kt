@@ -13,7 +13,7 @@ object PlannerListRepositoryImpl : PlannerListRepository {
     private var autoIncId = 0
 
     init {
-        for(i in 0 until 1000) {
+        for(i in 0 until 100) {
             val item = PlannerItem("Name $i", i, true)
             addPlannerItemList(item)
         }

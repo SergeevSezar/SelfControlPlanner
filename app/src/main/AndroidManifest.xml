@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SelfControlPlanner">
         <activity
+            android:name=".presentation.PlanItemActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>
