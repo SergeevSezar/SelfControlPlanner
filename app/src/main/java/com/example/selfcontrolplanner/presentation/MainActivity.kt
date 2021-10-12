@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.selfcontrolplanner.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,11 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.plannerList.observe(this) {
             adapter.submitList(it)
+        }
+        val buttonAddItem = findViewById<FloatingActionButton>(R.id.btn_add_plan_item)
+        buttonAddItem.setOnClickListener {
+            val intent = PlanItemActivity.newIntentAddItem(this)
+            startActivity(intent)
         }
     }
 
@@ -65,6 +71,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListener() {
         adapter.onPlanItemClickListener = {
             Log.d("MainActivity", it.toString())
+            val intent = PlanItemActivity.newIntentEditItem(this, it.id)
+            startActivity(intent)
         }
     }
 
