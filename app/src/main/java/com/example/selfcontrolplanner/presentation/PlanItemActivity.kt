@@ -2,11 +2,12 @@ package com.example.selfcontrolplanner.presentation
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.selfcontrolplanner.R
 import com.example.selfcontrolplanner.domain.PlannerItem
@@ -28,18 +29,82 @@ class PlanItemActivity : AppCompatActivity() {
         parseIntent()
         viewModel = ViewModelProvider(this)[PlanItemViewModel::class.java]
         initViews()
+        addChangeTextListeners()
+        launchRightMode()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.errorInputName.observe(this) {
+            val message = if (it) {
+                getString(R.string.error_name)
+            } else {
+                null
+            }
+            tilName.error = message
+        }
+        viewModel.errorInputCount.observe(this) {
+            val message = if (it) {
+                getString(R.string.error_cont)
+            } else {
+                null
+            }
+            tilCount.error = message
+        }
+        viewModel.closeScreen.observe(this) {
+            finish()
+        }
+    }
+
+    private fun launchRightMode() {
         when (screenMode) {
             MODE_EDIT -> launchEditMode()
             MODE_ADD -> launchAddMode()
         }
     }
 
-    private fun launchEditMode() {
+    private fun addChangeTextListeners() {
+        etName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.resetErrorInputName()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+        etCount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.resetErrorInputCount()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+    }
+
+    private fun launchEditMode() {
+        viewModel.getPlanItem(planItemId)
+        viewModel.planItem.observe(this){
+            etName.setText(it.name)
+            etCount.setText(it.data.toString())
+        }
+        saveButton.setOnClickListener {
+            viewModel.editPlanItem(etName.text?.toString(), etCount.text?.toString())
+        }
     }
 
     private fun launchAddMode() {
-
+        saveButton.setOnClickListener {
+            viewModel.addPlanItem(etName.text?.toString(), etCount.text?.toString())
+        }
     }
 
     private fun parseIntent() {
