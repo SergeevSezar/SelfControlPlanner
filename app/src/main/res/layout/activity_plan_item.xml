@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/plan_item_container"
-    android:name="com.example.selfcontrolplanner.presentation.PlanItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.PlanItemActivity"

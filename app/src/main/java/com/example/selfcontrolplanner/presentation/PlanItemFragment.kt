@@ -16,18 +16,16 @@ import com.example.selfcontrolplanner.R
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.google.android.material.textfield.TextInputLayout
 
-class PlanItemFragment(
-    private val screenMode: String = MODE_UNKNOWN,
-    private val planItemId: Int = PlannerItem.UNDEFINED_ID
-) : Fragment() {
+class PlanItemFragment: Fragment() {
     private lateinit var viewModel: PlanItemViewModel
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
     private lateinit var etCount: EditText
     private lateinit var saveButton: Button
-//    private var screenMode = MODE_UNKNOWN
-//    private var planItemId = PlannerItem.UNDEFINED_ID
+
+    private var screenMode = MODE_UNKNOWN
+    private var planItemId = PlannerItem.UNDEFINED_ID
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -139,22 +137,38 @@ class PlanItemFragment(
 
     companion object {
 
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
-        private const val EXTRA_PLAN_ITEM_ID = "extra_plan_item_id"
+        private const val SCREEN_MODE = "extra_mode"
+        private const val PLAN_ITEM_ID = "extra_plan_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
         private const val MODE_UNKNOWN = ""
 
+        fun newInstanceAddItem(): PlanItemFragment {
+            val args = Bundle()
+            args.putString(SCREEN_MODE, MODE_ADD)
+            val fragment = PlanItemFragment()
+            fragment.arguments = args
+            return fragment
+        }
+
+
+        //TODO change constructor param
+        fun newInstanceEditItem(planItemId: Int): PlanItemFragment {
+            val args = Bundle()
+            args.putString(SCREEN_MODE, MODE_EDIT)
+            return PlanItemFragment()
+        }
+
         fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, PlanItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
+            intent.putExtra(SCREEN_MODE, MODE_ADD)
             return intent
         }
 
         fun newIntentEditItem(context: Context, planItemId: Int): Intent {
             val intent = Intent(context, PlanItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_PLAN_ITEM_ID, planItemId)
+            intent.putExtra(SCREEN_MODE, MODE_EDIT)
+            intent.putExtra(PLAN_ITEM_ID, planItemId)
             return intent
         }
     }

@@ -30,7 +30,7 @@ class PlanItemActivity : AppCompatActivity() {
 //        viewModel = ViewModelProvider(this)[PlanItemViewModel::class.java]
 //        initViews()
 //        addChangeTextListeners()
-//        launchRightMode() //TODO расскоментировать при продолжении
+        launchRightMode()
 //        observeViewModel()
     }
 
@@ -56,15 +56,16 @@ class PlanItemActivity : AppCompatActivity() {
 //        }
 //    }
 
-    //TODO дополнить метод и расскоментировать
-//    private fun launchRightMode() {
-//        when (screenMode) {
-//            MODE_EDIT -> launchEditMode()
-//            MODE_ADD -> launchAddMode()
-//        }
-//        supportFragmentManager.beginTransaction()
-//            .add(R.id.plan_item_container, )
-//    }
+    private fun launchRightMode() {
+        val fragment = when (screenMode) {
+            MODE_EDIT -> PlanItemFragment.newInstanceEditItem(planItemId)
+            MODE_ADD -> PlanItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("Unknown screen mode $screenMode")
+        }
+        supportFragmentManager.beginTransaction()
+            .add(R.id.plan_item_container, fragment)
+            .commit()
+    }
 
 //    private fun addChangeTextListeners() {
 //        etName.addTextChangedListener(object : TextWatcher {
