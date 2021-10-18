@@ -1,7 +1,5 @@
 package com.example.selfcontrolplanner.presentation
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +14,7 @@ import com.example.selfcontrolplanner.R
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.google.android.material.textfield.TextInputLayout
 
-class PlanItemFragment: Fragment() {
+class PlanItemFragment : Fragment() {
     private lateinit var viewModel: PlanItemViewModel
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -26,6 +24,11 @@ class PlanItemFragment: Fragment() {
 
     private var screenMode = MODE_UNKNOWN
     private var planItemId = PlannerItem.UNDEFINED_ID
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +40,6 @@ class PlanItemFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        parseParams()
         viewModel = ViewModelProvider(this)[PlanItemViewModel::class.java]
         initViews(view)
         addChangeTextListeners()
@@ -119,11 +121,20 @@ class PlanItemFragment: Fragment() {
     }
 
     private fun parseParams() {
-        if (screenMode != MODE_ADD && screenMode != MODE_EDIT) {
+        val args = requireArguments()
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException("Param screen mode is absent")
         }
-        if (screenMode == MODE_EDIT && planItemId == PlannerItem.UNDEFINED_ID) {
+        val mode = args.getString(SCREEN_MODE)
+        if (mode != MODE_EDIT && mode != MODE_ADD) {
+            throw RuntimeException("Unknown screen mode $mode")
+        }
+        screenMode = mode
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(PLAN_ITEM_ID)) {
                 throw RuntimeException("Param plan item id is absent")
+            }
+            planItemId = args.getInt(PLAN_ITEM_ID, PlannerItem.UNDEFINED_ID)
         }
     }
 
@@ -144,32 +155,20 @@ class PlanItemFragment: Fragment() {
         private const val MODE_UNKNOWN = ""
 
         fun newInstanceAddItem(): PlanItemFragment {
-            val args = Bundle()
-            args.putString(SCREEN_MODE, MODE_ADD)
-            val fragment = PlanItemFragment()
-            fragment.arguments = args
-            return fragment
+            return PlanItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
+                }
+            }
         }
 
-
-        //TODO change constructor param
         fun newInstanceEditItem(planItemId: Int): PlanItemFragment {
-            val args = Bundle()
-            args.putString(SCREEN_MODE, MODE_EDIT)
-            return PlanItemFragment()
-        }
-
-        fun newIntentAddItem(context: Context): Intent {
-            val intent = Intent(context, PlanItemActivity::class.java)
-            intent.putExtra(SCREEN_MODE, MODE_ADD)
-            return intent
-        }
-
-        fun newIntentEditItem(context: Context, planItemId: Int): Intent {
-            val intent = Intent(context, PlanItemActivity::class.java)
-            intent.putExtra(SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(PLAN_ITEM_ID, planItemId)
-            return intent
+            return PlanItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(PLAN_ITEM_ID, planItemId)
+                }
+            }
         }
     }
 }
