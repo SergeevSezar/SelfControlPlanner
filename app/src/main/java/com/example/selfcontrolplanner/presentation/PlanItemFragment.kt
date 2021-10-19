@@ -1,5 +1,6 @@
 package com.example.selfcontrolplanner.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +16,10 @@ import com.example.selfcontrolplanner.domain.PlannerItem
 import com.google.android.material.textfield.TextInputLayout
 
 class PlanItemFragment : Fragment() {
+
     private lateinit var viewModel: PlanItemViewModel
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
@@ -24,6 +28,15 @@ class PlanItemFragment : Fragment() {
 
     private var screenMode = MODE_UNKNOWN
     private var planItemId = PlannerItem.UNDEFINED_ID
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must impl OnEditingFinishedListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +78,7 @@ class PlanItemFragment : Fragment() {
             tilCount.error = message
         }
         viewModel.closeScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
@@ -144,6 +157,11 @@ class PlanItemFragment : Fragment() {
         etCount = view.findViewById(R.id.et_count)
         etName = view.findViewById(R.id.et_name)
         saveButton = view.findViewById(R.id.save_button)
+    }
+
+    interface OnEditingFinishedListener {
+
+        fun onEditingFinished()
     }
 
     companion object {
