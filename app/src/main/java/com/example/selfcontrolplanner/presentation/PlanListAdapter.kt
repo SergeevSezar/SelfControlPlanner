@@ -2,21 +2,15 @@ package com.example.selfcontrolplanner.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import com.example.selfcontrolplanner.R
+import com.example.selfcontrolplanner.databinding.DisabledPlanItemBinding
+import com.example.selfcontrolplanner.databinding.EnabledPlanItemBinding
 import com.example.selfcontrolplanner.domain.PlannerItem
 
 class PlanListAdapter : ListAdapter<PlannerItem, PlanItemViewHolder>(PlanItemDiffCallback()) {
-
-    //DiffUtil.CallBack
-//class PlanListAdapter : RecyclerView.Adapter<PlanListAdapter.PlanItemViewHolder>() {
-//    var planList = listOf<PlannerItem>()
-//        set(value) {
-//            val callback = PlanListDiffCallback(planList, value)
-//            val diffResult = DiffUtil.calculateDiff(callback)
-//            diffResult.dispatchUpdatesTo(this)
-//            field = value
-//        }
 
     var onPlanItemLongClickListener: ((PlannerItem) -> Unit)? = null
     var onPlanItemClickListener: ((PlannerItem) -> Unit)? = null
@@ -27,21 +21,37 @@ class PlanListAdapter : ListAdapter<PlannerItem, PlanItemViewHolder>(PlanItemDif
             VIEW_TYPE_DISABLED -> R.layout.disabled_plan_item
             else -> throw RuntimeException("Unknown type: $viewType")
         }
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return PlanItemViewHolder(view)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
+            layout,
+            parent,
+            false
+        )
+        return PlanItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PlanItemViewHolder, position: Int) {
         val planItem = getItem(position)
-        holder.itemView.setOnLongClickListener {
+        val binding = holder.binding
+        binding.root.setOnLongClickListener {
             onPlanItemLongClickListener?.invoke(planItem)
             true
         }
-        holder.itemView.setOnClickListener {
+        binding.root.setOnClickListener {
             onPlanItemClickListener?.invoke(planItem)
         }
-        holder.tvName.text = planItem.name
-        holder.tvCount.text = planItem.data.toString()
+
+        when (binding) {
+            is DisabledPlanItemBinding -> {
+                binding.tvName.text = planItem.name
+                binding.tvCount.text = planItem.data.toString()
+            }
+
+            is EnabledPlanItemBinding -> {
+                binding.tvName.text = planItem.name
+                binding.tvCount.text = planItem.data.toString()
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

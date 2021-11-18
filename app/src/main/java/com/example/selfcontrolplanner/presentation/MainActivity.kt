@@ -9,25 +9,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.selfcontrolplanner.R
+import com.example.selfcontrolplanner.databinding.ActivityMainBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.zip.Inflater
 
 class MainActivity : AppCompatActivity(), PlanItemFragment.OnEditingFinishedListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: PlanListAdapter
-    private var planItemContainer: FragmentContainerView? = null
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        planItemContainer = findViewById(R.id.plan_item_container)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.plannerList.observe(this) {
             adapter.submitList(it)
         }
-        val buttonAddItem = findViewById<FloatingActionButton>(R.id.btn_add_plan_item)
-        buttonAddItem.setOnClickListener {
+        binding.btnAddPlanItem.setOnClickListener {
             if (isOnePaneMode()) {
                 val intent = PlanItemActivity.newIntentAddItem(this)
                 startActivity(intent)
@@ -43,7 +44,7 @@ override fun onEditingFinished() {
 }
 
 private fun isOnePaneMode(): Boolean {
-    return planItemContainer == null
+    return binding.planItemContainer == null
 }
 
 private fun launchFragment(fragment: Fragment) {
@@ -55,20 +56,18 @@ private fun launchFragment(fragment: Fragment) {
 }
 
 private fun setupRecyclerView() {
-    val rvPlanList = findViewById<RecyclerView>(R.id.rv_planner_list)
-    adapter = PlanListAdapter()
-    rvPlanList.adapter = adapter
-    rvPlanList.recycledViewPool.setMaxRecycledViews(
+    binding.rvPlannerList.adapter = adapter
+    binding.rvPlannerList.recycledViewPool.setMaxRecycledViews(
         PlanListAdapter.VIEW_TYPE_DISABLED,
         PlanListAdapter.MAX_POOL_SIZE
     )
-    rvPlanList.recycledViewPool.setMaxRecycledViews(
+    binding.rvPlannerList.recycledViewPool.setMaxRecycledViews(
         PlanListAdapter.VIEW_TYPE_DISABLED,
         PlanListAdapter.MAX_POOL_SIZE
     )
     setupLongClickListener()
     setupClickListener()
-    setupSwipeListener(rvPlanList)
+    setupSwipeListener(binding.rvPlannerList)
 }
 
 private fun setupSwipeListener(rvPlanList: RecyclerView?) {
