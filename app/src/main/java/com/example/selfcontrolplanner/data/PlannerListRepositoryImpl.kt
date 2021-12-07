@@ -1,55 +1,33 @@
 package com.example.selfcontrolplanner.data
 
+import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.example.selfcontrolplanner.domain.PlannerListRepository
 
-object PlannerListRepositoryImpl : PlannerListRepository {
+class PlannerListRepositoryImpl(application: Application) : PlannerListRepository {
 
-    private val plannerListLD = MutableLiveData<List<PlannerItem>>()
-    private val plannerList = sortedSetOf<PlannerItem>({ o1, o2 -> o1.id.compareTo(o2.id) })
-
-    private var autoIncId = 0
-
-    init {
-        for(i in 0 until 10) {
-            val item = PlannerItem("Name $i", i, true)
-            addPlannerItemList(item)
-        }
-    }
+    private val plannerListDao = AppDataBase.getInstance(application).plannerListDao()
+    private val mapper = PlanLIstMapper()
 
     override fun getPlannerList(): LiveData<List<PlannerItem>> {
-        return plannerListLD
+        return TODO()
     }
 
     override fun getPlannerItem(plannerItemId: Int): PlannerItem {
-        return plannerList.find {
-            it.id == plannerItemId
-        } ?: throw RuntimeException("Element with id $plannerItemId not found")
+        val dbModel = plannerListDao.getPlan(plannerItemId)
+        return mapper.mapDbModelToEntity(dbModel)
     }
 
     override fun editPlannerItem(plannerItem: PlannerItem) {
-        val oldElement = getPlannerItem(plannerItem.id)
-        plannerList.remove(oldElement)
-        addPlannerItemList(plannerItem)
+        plannerListDao.addPlanItem(mapper.mapEntityToDbModel(plannerItem))
     }
 
     override fun addPlannerItemList(plannerItem: PlannerItem) {
-        if (plannerItem.id == PlannerItem.UNDEFINED_ID) {
-            plannerItem.id = autoIncId
-            autoIncId++
-        }
-        plannerList.add(plannerItem)
-        updateList()
+       plannerListDao.addPlanItem(mapper.mapEntityToDbModel(plannerItem))
     }
 
     override fun removePlannerItem(plannerItem: PlannerItem) {
-        plannerList.remove(plannerItem)
-        updateList()
-    }
-
-    private fun updateList() {
-        plannerListLD.postValue(plannerList.toList())
+        plannerListDao.deletePlanItem(plannerItem.id)
     }
 }
