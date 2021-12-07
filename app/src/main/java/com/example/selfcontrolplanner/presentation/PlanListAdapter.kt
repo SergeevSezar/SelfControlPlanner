@@ -56,7 +56,7 @@ class PlanListAdapter : ListAdapter<PlannerItem, PlanItemViewHolder>(PlanItemDif
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item.deferred) {
+        return if (item.enabled) {
             VIEW_TYPE_ENABLED
         } else {
             VIEW_TYPE_DISABLED

@@ -1,6 +1,5 @@
 package com.example.selfcontrolplanner.presentation
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.selfcontrolplanner.data.PlannerListRepositoryImpl
 import com.example.selfcontrolplanner.domain.*
@@ -20,7 +19,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun editPlannerList(plannerItem: PlannerItem) {
-        val newItem = plannerItem.copy(deferred = !plannerItem.deferred)
+        val newItem = plannerItem.copy(enabled = !plannerItem.enabled)
         editPlannerItemUseCase.editPlannerItem(newItem)
     }
 }
