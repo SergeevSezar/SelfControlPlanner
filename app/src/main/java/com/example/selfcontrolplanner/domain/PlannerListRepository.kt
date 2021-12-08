@@ -6,11 +6,11 @@ interface PlannerListRepository {
 
     fun getPlannerList(): LiveData<List<PlannerItem>>
 
-    fun getPlannerItem(plannerItemId: Int): PlannerItem
+    suspend fun getPlannerItem(plannerItemId: Int): PlannerItem
 
-    fun editPlannerItem(plannerItem: PlannerItem)
+    suspend fun editPlannerItem(plannerItem: PlannerItem)
 
-    fun addPlannerItemList(plannerItem: PlannerItem)
+    suspend fun addPlannerItemList(plannerItem: PlannerItem)
 
-    fun removePlannerItem(plannerItem: PlannerItem)
+    suspend fun removePlannerItem(plannerItem: PlannerItem)
 }

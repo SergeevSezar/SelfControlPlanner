@@ -22,20 +22,20 @@ class PlannerListRepositoryImpl(application: Application) : PlannerListRepositor
         mapper.mapListDbModelToListEntity(it)
     }
 
-    override fun getPlannerItem(plannerItemId: Int): PlannerItem {
+    override suspend fun getPlannerItem(plannerItemId: Int): PlannerItem {
         val dbModel = plannerListDao.getPlan(plannerItemId)
         return mapper.mapDbModelToEntity(dbModel)
     }
 
-    override fun editPlannerItem(plannerItem: PlannerItem) {
+    override suspend fun editPlannerItem(plannerItem: PlannerItem) {
         plannerListDao.addPlanItem(mapper.mapEntityToDbModel(plannerItem))
     }
 
-    override fun addPlannerItemList(plannerItem: PlannerItem) {
+    override suspend fun addPlannerItemList(plannerItem: PlannerItem) {
        plannerListDao.addPlanItem(mapper.mapEntityToDbModel(plannerItem))
     }
 
-    override fun removePlannerItem(plannerItem: PlannerItem) {
+    override suspend fun removePlannerItem(plannerItem: PlannerItem) {
         plannerListDao.deletePlanItem(plannerItem.id)
     }
 }

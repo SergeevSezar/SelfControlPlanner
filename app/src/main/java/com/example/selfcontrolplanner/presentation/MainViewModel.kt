@@ -2,11 +2,13 @@ package com.example.selfcontrolplanner.presentation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.selfcontrolplanner.data.PlannerListRepositoryImpl
 import com.example.selfcontrolplanner.domain.EditPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.GetPlannerListUseCase
 import com.example.selfcontrolplanner.domain.PlannerItem
 import com.example.selfcontrolplanner.domain.RemovePlannerItemUseCase
+import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -19,11 +21,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val plannerList = getPlannerListUseCase.getPlannerList()
 
     fun removePlannerItem(plannerItem: PlannerItem) {
-        removePlannerItemUseCase.removePlannerItem(plannerItem)
+        viewModelScope.launch {
+            removePlannerItemUseCase.removePlannerItem(plannerItem)
+        }
     }
 
     fun editPlannerList(plannerItem: PlannerItem) {
-        val newItem = plannerItem.copy(enabled = !plannerItem.enabled)
-        editPlannerItemUseCase.editPlannerItem(newItem)
+        viewModelScope.launch {
+            val newItem = plannerItem.copy(enabled = !plannerItem.enabled)
+            editPlannerItemUseCase.editPlannerItem(newItem)
+        }
     }
 }

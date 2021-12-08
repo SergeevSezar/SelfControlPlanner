@@ -13,11 +13,11 @@ interface PlannerListDao {
     fun getPlanList(): LiveData<List<PlannerItemDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addPlanItem(plannerItemDbModel: PlannerItemDbModel)
+    suspend fun addPlanItem(plannerItemDbModel: PlannerItemDbModel)
 
     @Query("DELETE FROM plan_items WHERE id=:planItemId")
-    fun deletePlanItem(planItemId: Int)
+    suspend fun deletePlanItem(planItemId: Int)
 
     @Query("SELECT * FROM plan_items WHERE id=:planItemId LIMIT 1")
-    fun getPlan(planItemId: Int): PlannerItemDbModel
+    suspend fun getPlan(planItemId: Int): PlannerItemDbModel
 }

@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.selfcontrolplanner.data.PlannerListRepositoryImpl
 import com.example.selfcontrolplanner.domain.AddPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.EditPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.GetPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.PlannerItem
+import kotlinx.coroutines.launch
 
 class PlanItemViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -34,8 +36,10 @@ class PlanItemViewModel(application: Application) : AndroidViewModel(application
         get() = _closeScreen
 
     fun getPlanItem(planItemId: Int) {
-        val item = getPlanItemUseCase.getPlannerItem(planItemId)
-        _planItem.value = item
+        viewModelScope.launch {
+            val item = getPlanItemUseCase.getPlannerItem(planItemId)
+            _planItem.value = item
+        }
     }
 
     fun addPlanItem(inputName: String?, inputCount: String?) {
@@ -43,9 +47,11 @@ class PlanItemViewModel(application: Application) : AndroidViewModel(application
         val count = parseCount(inputCount)
         val fieldsValid = validateInput(name, count)
         if (fieldsValid) {
-            val planItem = PlannerItem(name, count, true)
-            addPlanItemUseCase.addPlannerItemList(planItem)
-            finishWork()
+            viewModelScope.launch {
+                val planItem = PlannerItem(name, count, true)
+                addPlanItemUseCase.addPlannerItemList(planItem)
+                finishWork()
+            }
         }
 
     }
@@ -56,9 +62,11 @@ class PlanItemViewModel(application: Application) : AndroidViewModel(application
         val fieldsValid = validateInput(name, count)
         if (fieldsValid) {
             _planItem.value?.let {
-                val item = it.copy(name = name, count = count)
-                editPlanItemUseCase.editPlannerItem(item)
-                finishWork()
+                viewModelScope.launch {
+                    val item = it.copy(name = name, count = count)
+                    editPlanItemUseCase.editPlannerItem(item)
+                    finishWork()
+                }
             }
         }
     }
