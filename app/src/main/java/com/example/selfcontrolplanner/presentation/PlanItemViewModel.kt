@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.selfcontrolplanner.data.PlannerListRepositoryImpl
 import com.example.selfcontrolplanner.domain.AddPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.EditPlannerItemUseCase
