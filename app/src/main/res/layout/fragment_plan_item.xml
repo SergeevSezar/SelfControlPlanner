@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_count_value"
                 android:inputType="number"
-                android:text="@{String.valueOf(viewModel.planItem.data)}"
+                android:text="@{String.valueOf(viewModel.planItem.count)}"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -44,12 +44,12 @@ class PlanListAdapter : ListAdapter<PlannerItem, PlanItemViewHolder>(PlanItemDif
         when (binding) {
             is DisabledPlanItemBinding -> {
                 binding.tvName.text = planItem.name
-                binding.tvCount.text = planItem.data.toString()
+                binding.tvCount.text = planItem.count.toString()
             }
 
             is EnabledPlanItemBinding -> {
                 binding.tvName.text = planItem.name
-                binding.tvCount.text = planItem.data.toString()
+                binding.tvCount.text = planItem.count.toString()
             }
         }
     }

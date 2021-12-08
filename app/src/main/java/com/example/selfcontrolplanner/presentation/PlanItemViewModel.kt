@@ -1,5 +1,7 @@
 package com.example.selfcontrolplanner.presentation
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,9 +11,9 @@ import com.example.selfcontrolplanner.domain.EditPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.GetPlannerItemUseCase
 import com.example.selfcontrolplanner.domain.PlannerItem
 
-class PlanItemViewModel : ViewModel() {
+class PlanItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = PlannerListRepositoryImpl
+    private val repository = PlannerListRepositoryImpl(application)
     private val getPlanItemUseCase = GetPlannerItemUseCase(repository)
     private val addPlanItemUseCase = AddPlannerItemUseCase(repository)
     private val editPlanItemUseCase = EditPlannerItemUseCase(repository)
@@ -55,7 +57,7 @@ class PlanItemViewModel : ViewModel() {
         val fieldsValid = validateInput(name, count)
         if (fieldsValid) {
             _planItem.value?.let {
-                val item = it.copy(name = name, data = count)
+                val item = it.copy(name = name, count = count)
                 editPlanItemUseCase.editPlannerItem(item)
                 finishWork()
             }

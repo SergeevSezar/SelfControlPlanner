@@ -1,12 +1,16 @@
 package com.example.selfcontrolplanner.presentation
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.example.selfcontrolplanner.data.PlannerListRepositoryImpl
-import com.example.selfcontrolplanner.domain.*
+import com.example.selfcontrolplanner.domain.EditPlannerItemUseCase
+import com.example.selfcontrolplanner.domain.GetPlannerListUseCase
+import com.example.selfcontrolplanner.domain.PlannerItem
+import com.example.selfcontrolplanner.domain.RemovePlannerItemUseCase
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = PlannerListRepositoryImpl
+    private val repository = PlannerListRepositoryImpl(application)
 
     private val getPlannerListUseCase = GetPlannerListUseCase(repository)
     private val removePlannerItemUseCase =  RemovePlannerItemUseCase(repository)
